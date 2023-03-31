@@ -4,23 +4,30 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-rails'
-"Plug 'thoughtbot/vim-rspec'
+" Plug 'thoughtbot/vim-rspec'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'klen/nvim-test'
 Plug 'vim-ruby/vim-ruby'
-"Plug 'easymotion/vim-easymotion'
 Plug 'w0rp/ale'
-Plug 'posva/vim-vue'
 Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-commentary'
 Plug 'mattn/emmet-vim'
 Plug 'tpope/vim-surround'
-Plug 'leafgarland/typescript-vim'
 Plug 'lepture/vim-jinja'
-Plug 'preservim/nerdtree'
-Plug 'kien/ctrlp.vim'
-Plug 'skalnik/vim-vroom'
 Plug 'jlanzarotta/bufexplorer'
 
 Plug 'wesgibbs/vim-irblack'
+"Plug 'williamboman/mason.nvim'
+"Plug 'williamboman/mason-lspconfig.nvim'
+"Plug 'neovim/nvim-lspconfig'
+
+Plug 'nvim-lua/plenary.nvim' 
+Plug 'nvim-telescope/telescope.nvim'
+Plug 'nvim-telescope/telescope-file-browser.nvim'
+Plug 'nvim-tree/nvim-web-devicons'
+
+Plug 'nvim-neo-tree/neo-tree.nvim'
+Plug 'MunifTanjim/nui.nvim'
 
 " Initialize plugin system
 call plug#end()
@@ -121,10 +128,10 @@ endfunction
 " We have to have a winheight bigger than we want to set winminheight. But if
 " we set winheight to be huge before winminheight, the winminheight set will
 " fail.
-set winwidth=84
-set winheight=5
-set winminheight=5
-set winheight=999
+" set winwidth=84
+" set winheight=5
+" set winminheight=5
+" set winheight=999
 
 set wildmenu
 set wildmode=list:longest
@@ -141,16 +148,6 @@ endfun
 " autocmd BufWritePre *.rb :call <SID>StripTrailingWhitespaces()
 autocmd FileType c,cpp,java,php,ruby,python,haml,html,javascript,scss,sass,feature,yaml,typescript,vue,erb,tf autocmd BufWritePre <buffer> :call <SID>StripTrailingWhitespaces()
 
-nnoremap <leader><leader> <c-^>
-map <Leader>m :RTmodel
-map <Leader>c :RTcontroller
-map <Leader>v :RTview
-command! Rroutes :tabe config/routes.rb
-
-" open routes and gemfile in their own split
-map <leader>gr :topleft :split config/routes.rb<cr>
-map <leader>gg :topleft 100 :split Gemfile<cr>
-
 " open files in the current directory
 cnoremap %% <C-R>=expand('%:h').'/'<cr>
 map <leader>e :edit %%
@@ -163,13 +160,10 @@ command! BD bn\|bd \# <cr>
 cmap w!! w !sudo tee % > /dev/null
 
 " Rspec.vim mappings
-" let g:rspec_runner = "os_x_iterm2"
-" let g:rspec_command = "Dispatch bundle exec ./bin/rspec {spec} --color"
-" let g:rspec_command = "Dispatch bundle exec rspec {spec} --color"
-" map <Leader>t :call RunCurrentSpecFile()<CR>
-" map <Leader>s :call RunNearestSpec()<CR>
-" map <Leader>l :call RunLastSpec()<CR>
-" map <Leader>a :call RunAllSpecs()<CR>
+map <Leader>r :call RunCurrentSpecFile()<CR>
+map <Leader>s :call RunNearestSpec()<CR>
+map <Leader>l :call RunLastSpec()<CR>
+map <Leader>a :call RunAllSpecs()<CR>
 
 " fix pre ruby 1.9 hash syntax
 command! Fh :%s/:\([^ ]*\)\(\s*\)=>/\1:/gc
@@ -194,8 +188,15 @@ nnoremap <C-g> :Ag<Cr>
 map <Leader>f :ALEFix<Cr>
 
 " Start NERDTree when Vim is started without file arguments.
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 0 && !exists('s:std_in') | NERDTree | endif
+" autocmd StdinReadPre * let s:std_in=1
+" autocmd VimEnter * if argc() == 0 && !exists('s:std_in') | NERDTree | endif
+
+" Find files using Telescope command-line sugar.
+nnoremap <leader>ff <cmd>Telescope find_files path=%:p:h<cr>
+nnoremap <leader>fb <cmd>Telescope file_browser path=%:p:h select_buffer=true<cr>
+nnoremap <leader>fg <cmd>Telescope live_grep<cr>
+nnoremap <leader>fbf <cmd>Telescope buffers<cr>
+nnoremap <leader>fh <cmd>Telescope help_tags<cr>
 
 " CtrlP settings
 let g:ctrlp_max_files=5000
@@ -215,4 +216,32 @@ let g:user_emmet_leader_key=','
 let g:copilot_node_command = "~/.nodenv/shims/node"
 
 " NVim vim-vroom terminal mode
-let g:vroom_use_terminal = 1
+" let g:vroom_use_terminal = 1
+
+lua <<EOF
+
+require("telescope").load_extension "file_browser"
+require("neo-tree").setup({}) 
+require("nvim-test").setup({
+  run = true,                 -- run tests (using for debug)
+  commands_create = true,     -- create commands (TestFile, TestLast, ...)
+  filename_modifier = ":.",   -- modify filenames before tests run(:h filename-modifiers)
+  silent = false,             -- less notifications
+  term = "terminal",          -- a terminal to run ("terminal"|"toggleterm")
+  termOpts = {
+    direction = "vertical",   -- terminal's direction ("horizontal"|"vertical"|"float")
+    width = 96,               -- terminal's width (for vertical|float)
+    height = 24,              -- terminal's height (for horizontal|float)
+    go_back = false,          -- return focus to original window after executing
+    stopinsert = "auto",      -- exit from insert mode (true|false|"auto")
+    keep_one = true,          -- keep only one terminal for testing
+  },
+  runners = {               -- setup tests runners
+    ruby = "nvim-test.runners.rspec",
+  }
+})
+
+EOF
+
+" Open Neotree when nvim starts
+autocmd VimEnter * Neotree
