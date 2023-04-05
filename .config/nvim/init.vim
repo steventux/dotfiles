@@ -160,10 +160,10 @@ command! BD bn\|bd \# <cr>
 cmap w!! w !sudo tee % > /dev/null
 
 " Rspec.vim mappings
-map <Leader>r :call RunCurrentSpecFile()<CR>
-map <Leader>s :call RunNearestSpec()<CR>
-map <Leader>l :call RunLastSpec()<CR>
-map <Leader>a :call RunAllSpecs()<CR>
+map <Leader>r :call TestFile()<CR>
+map <Leader>s :call TestNearest()<CR>
+map <Leader>l :call TestLast()<CR>
+map <Leader>a :call TestSuite()<CR>
 
 " fix pre ruby 1.9 hash syntax
 command! Fh :%s/:\([^ ]*\)\(\s*\)=>/\1:/gc
