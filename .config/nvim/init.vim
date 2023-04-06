@@ -4,23 +4,14 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-rails'
-" Plug 'thoughtbot/vim-rspec'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'klen/nvim-test'
 Plug 'vim-ruby/vim-ruby'
 Plug 'w0rp/ale'
 Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-commentary'
-Plug 'mattn/emmet-vim'
 Plug 'tpope/vim-surround'
-Plug 'lepture/vim-jinja'
 Plug 'jlanzarotta/bufexplorer'
-
-Plug 'wesgibbs/vim-irblack'
-"Plug 'williamboman/mason.nvim'
-"Plug 'williamboman/mason-lspconfig.nvim'
-"Plug 'neovim/nvim-lspconfig'
-
 Plug 'nvim-lua/plenary.nvim' 
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-telescope/telescope-file-browser.nvim'
@@ -29,13 +20,17 @@ Plug 'nvim-tree/nvim-web-devicons'
 Plug 'nvim-neo-tree/neo-tree.nvim'
 Plug 'MunifTanjim/nui.nvim'
 
+Plug 'Rigellute/rigel'
+
 " Initialize plugin system
 call plug#end()
 
 syntax on
+set termguicolors
+syntax enable
+colorscheme rigel
 
 let g:ale_set_highlights = 0
-colorscheme busierbee
 
 filetype plugin indent on
 set number
@@ -125,14 +120,6 @@ function! s:Median(nums)
   endif
 endfunction
 
-" We have to have a winheight bigger than we want to set winminheight. But if
-" we set winheight to be huge before winminheight, the winminheight set will
-" fail.
-" set winwidth=84
-" set winheight=5
-" set winminheight=5
-" set winheight=999
-
 set wildmenu
 set wildmode=list:longest
 
@@ -160,10 +147,10 @@ command! BD bn\|bd \# <cr>
 cmap w!! w !sudo tee % > /dev/null
 
 " Rspec.vim mappings
-map <Leader>r :call TestFile()<CR>
-map <Leader>s :call TestNearest()<CR>
-map <Leader>l :call TestLast()<CR>
-map <Leader>a :call TestSuite()<CR>
+map <Leader>r :TestFile<CR>
+map <Leader>s :TestNearest<CR>
+map <Leader>l :TestLast<CR>
+map <Leader>a :TestSuite<CR>
 
 " NeoTree toggle
 map <Leader>n :NeoTreeFocusToggle<CR>
@@ -184,9 +171,10 @@ nnoremap <C-g> :Ag<Cr>
 
 map <Leader>f :ALEFix<Cr>
 
-" Start NERDTree when Vim is started without file arguments.
-" autocmd StdinReadPre * let s:std_in=1
-" autocmd VimEnter * if argc() == 0 && !exists('s:std_in') | NERDTree | endif
+" Start Neotree when nvim is started without file arguments.
+if empty(argv())
+  au VimEnter * Neotree
+endif
 
 " Find files using Telescope command-line sugar.
 nnoremap <leader>ff <cmd>Telescope find_files path=%:p:h<cr>
@@ -194,10 +182,6 @@ nnoremap <leader>fb <cmd>Telescope file_browser path=%:p:h select_buffer=true<cr
 nnoremap <leader>fg <cmd>Telescope live_grep<cr>
 nnoremap <leader>fbf <cmd>Telescope buffers<cr>
 nnoremap <leader>fh <cmd>Telescope help_tags<cr>
-
-" CtrlP settings
-let g:ctrlp_max_files=5000
-let g:ctrlp_custom_ignore = '\v[\/](.github|coverage|log|node_modules|storage|tmp)|(\.(swp|ico|git|gif|png|jpg))$'
 
 " don't hide quotes in json
 let g:vim_json_syntax_conceal = 0
@@ -209,11 +193,7 @@ let g:ale_fixers = {
       \   'javascript': ['eslint'],
       \   'ruby': ['rubocop'],
       \}
-let g:user_emmet_leader_key=','
 let g:copilot_node_command = "~/.nodenv/shims/node"
-
-" NVim vim-vroom terminal mode
-" let g:vroom_use_terminal = 1
 
 lua <<EOF
 
