@@ -165,6 +165,9 @@ map <Leader>s :call TestNearest()<CR>
 map <Leader>l :call TestLast()<CR>
 map <Leader>a :call TestSuite()<CR>
 
+" NeoTree toggle
+map <Leader>n :NeoTreeFocusToggle<CR>
+
 " fix pre ruby 1.9 hash syntax
 command! Fh :%s/:\([^ ]*\)\(\s*\)=>/\1:/gc
 
@@ -172,12 +175,6 @@ command! Fh :%s/:\([^ ]*\)\(\s*\)=>/\1:/gc
 :set noswapfile
 :set nobackup
 :set nowritebackup
-
-" Gif config
-" map  / <Plug>(easymotion-sn)
-" omap / <Plug>(easymotion-tn)
-" map  n <Plug>(easymotion-next)
-" map  N <Plug>(easymotion-prev)
 
 map [b :bp<cr>
 map ]b :bn<cr>
@@ -243,5 +240,3 @@ require("nvim-test").setup({
 
 EOF
 
-" Open Neotree when nvim starts
-autocmd VimEnter * Neotree
