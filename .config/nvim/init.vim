@@ -198,7 +198,12 @@ let g:copilot_node_command = "~/.nodenv/shims/node"
 lua <<EOF
 
 require("telescope").load_extension "file_browser"
-require("neo-tree").setup({}) 
+require("neo-tree").setup({
+  source_selector = {
+    winbar = true,
+    statusline = false
+  }
+}) 
 require("nvim-test").setup({
   run = true,                 -- run tests (using for debug)
   commands_create = true,     -- create commands (TestFile, TestLast, ...)
