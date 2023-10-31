@@ -146,6 +146,9 @@ command! BD bn\|bd \# <cr>
 " write with sudo
 cmap w!! w !sudo tee % > /dev/null
 
+" run ctags with exclusions
+cmap ctags ctags --exclude=.git --exclude=.github --exclude=node_modules --exclude=public --exclude=log -R *
+
 " Rspec.vim mappings
 map <Leader>r :TestFile<CR>
 map <Leader>s :TestNearest<CR>
@@ -193,7 +196,7 @@ let g:ale_fixers = {
       \   'javascript': ['eslint'],
       \   'ruby': ['rubocop'],
       \}
-let g:copilot_node_command = "~/.nodenv/shims/node"
+let g:copilot_node_command = "~/.asdf/shims/node"
 
 lua <<EOF
 
