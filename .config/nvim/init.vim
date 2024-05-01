@@ -226,5 +226,9 @@ require("nvim-test").setup({
   }
 })
 
+require('nvim-test.runners.rspec'):setup {
+  command = "bundle",
+}
+
 EOF
 
