@@ -158,6 +158,7 @@ map <Leader>a :TestSuite<CR>
 " NeoTree toggle
 map <Leader>n :NeoTreeFocusToggle<CR>
 
+
 " fix pre ruby 1.9 hash syntax
 command! Fh :%s/:\([^ ]*\)\(\s*\)=>/\1:/gc
 
@@ -229,6 +230,10 @@ require("nvim-test").setup({
 require('nvim-test.runners.rspec'):setup {
   command = "bundle",
 }
+
+-- Key mappings
+-- Visual mode copy to system clipboard
+vim.keymap.set("v", "<leader>y", '"+y', opts)
 
 EOF
 
